@@ -1,0 +1,3 @@
+No cmd:
+
+javac -d bin src/compilador/*.java src/compilador/lexico/*.java                  
