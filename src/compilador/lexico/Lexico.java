@@ -65,17 +65,13 @@ public class Lexico {
                     }
 
                     token.setValor(new ValorToken(lexema.toString().toLowerCase()));
-
-
-
-
                     return token;
                 } else if (caractere == ' ' || caractere == '\t') {
                     caractere = (char) br.read(); // ler o proximo caractere
                     coluna++;
+                    
                 } else if (caractere == '\r') {
                     caractere = (char) br.read(); // ler o proximo caractere
-
                     if (caractere == '\n') {
                         caractere = (char) br.read();
                         linha++;
@@ -83,16 +79,24 @@ public class Lexico {
                     }
 
                 }
+
+                // corrigido
                 else if (caractere == '+') {
                     caractere = (char) br.read();
+                    coluna++;
                     token.setClasse(ClasseToken.Mais);
                     return token;
                 }
+
+                // corrigido
                 else if (caractere == '-') {
                     caractere = (char) br.read();
+                    coluna++;
                     token.setClasse(ClasseToken.Menos);
                     return token;
                 }
+
+                // nao precisa corrigir contagem de coluna
                 else if (caractere == '/') {
                     caractere = (char) br.read();
 
@@ -106,86 +110,114 @@ public class Lexico {
                                 // System.out.println("Entao, como te conto...");
                                 caractere = (char) br.read();
                                 break;
+                            } else if (caractere == 65535) {
+                                break;
                             }
                         }
                     }
                     else {
+                        coluna++;
                         token.setClasse(ClasseToken.Divisao);
                         return token;
                     }
                 }
+                // corrigido
                 else if (caractere == '=') {
                     caractere = (char) br.read();
+                    coluna++;
                     token.setClasse(ClasseToken.Igualdade);
                     return token;
                 }
+                // corrigido
                 else if (caractere == ':') {
                     caractere = (char) br.read();
+                    coluna++;
                     if (caractere == '=') {
                         caractere = (char) br.read();
+                        coluna++;
                         token.setClasse(ClasseToken.Atribuicao);
                         return token;
                     } else {
-                        caractere = (char) br.read();
                         token.setClasse(ClasseToken.DoisPontos);
                         return token;
                     }
                 }
+                
+                // corrigido
                 else if (caractere == '>') {
                     caractere = (char) br.read();
+                    coluna++;
                     if (caractere == '=') {
                         caractere = (char) br.read();
+                        coluna++;
                         token.setClasse(ClasseToken.MaiorIgual);
                         return token;
                     } else {
-                        caractere = (char) br.read();
                         token.setClasse(ClasseToken.Maior);
                         return token;
                     }
                 }
+
+                // CLASSE PADRAO PARA ARRUMAR AS OUTRAS
                 else if (caractere == '<') {
                     caractere = (char) br.read();
+                    coluna++;
                     if (caractere == '=') {
                         caractere = (char) br.read();
+                        coluna++;
                         token.setClasse(ClasseToken.MenorIgual);
                         return token;
                     } else if (caractere == '>') {
                         caractere = (char) br.read();
+                        coluna++;
                         token.setClasse(ClasseToken.Diferente);
                         return token;
                     } else {
-                        caractere = (char) br.read();
                         token.setClasse(ClasseToken.Menor);
                         return token;
                     }
                 }
+
+                // corrigido
                 else if (caractere == ';') {
                     caractere = (char) br.read();
+                    coluna++;
                     token.setClasse(ClasseToken.PontoVirgula);
                     return token;
                 }
+                // corrigido
                 else if (caractere == ',') {
                     caractere = (char) br.read();
+                    coluna++;
                     token.setClasse(ClasseToken.Virgula);
                     return token;
                 }
+                // corrigido
                 else if (caractere == '(') {
                     caractere = (char) br.read();
+                    coluna++;
                     token.setClasse(ClasseToken.AbreParenteses);
                     return token;
                 }
+                // corrigido
                 else if (caractere == ')') {
                     caractere = (char) br.read();
+                    coluna++;
                     token.setClasse(ClasseToken.FechaParenteses);
                     return token;
                 }
+                // corrigido
                 else if (caractere == '.') {
                     caractere = (char) br.read();
+                    coluna++;
                     token.setClasse(ClasseToken.Ponto);
-                    return token;
+                    return 
+                    token;
                 }
+                // corrigido
                 else if (caractere == '*') {
                     caractere = (char) br.read();
+                    coluna++;
                     token.setClasse(ClasseToken.Multiplicacao);
                     return token;
                 }
@@ -223,6 +255,7 @@ public class Lexico {
                 // reconhecer strings
                 else if (caractere == '\'') {
                     caractere = (char) br.read();
+                    coluna++;
                     while (caractere != '\'') {
                         lexema.append(caractere);
                         // System.out.println(lexema);
@@ -243,6 +276,7 @@ public class Lexico {
                         }
                         else if (caractere == '\''){
                             caractere = (char) br.read();
+                            coluna++;
                             token.setClasse(ClasseToken.String);
                             token.setValor(new ValorToken(lexema.toString()));
                             return token;

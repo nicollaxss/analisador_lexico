@@ -45,9 +45,10 @@ Begin
     begin
         write(c);
     end;
-    write();
+    write('teste com algumas strings');
     read(a);
-    write();
+    write('asdasdsada
+    asdsadsa');
     read(b);
     if (a > 0 and b > 0) then
     begin
@@ -58,3 +59,4 @@ Begin
         writeln();
     end;
 end.
+//write('teste
