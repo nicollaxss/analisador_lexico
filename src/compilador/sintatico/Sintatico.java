@@ -110,6 +110,14 @@ public class Sintatico {
         }
     }
 
+    // <mais_var> ::=  ,  <variaveis> | ε
+    private void mais_var() {
+        if (token.getClasse() == ClasseToken.Virgula) {
+            token = lexico.getNexToken();
+            variaveis();
+        }
+    }
+
     // <tipo_var> ::= integer
     private void tipo_var() {
         if (ehPalavraReservada("integer")) {
