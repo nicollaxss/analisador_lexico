@@ -86,12 +86,31 @@ public class Sintatico {
 
     }
 
+    // <dvar> ::= <variaveis> : <tipo_var> {A02}
     private void dvar() {
-        
+        variaveis();
+        if (token.getClasse() == ClasseToken.DoisPontos) {
+            token = lexico.getNexToken();
+            tipo_var();
+        } else {
+            throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
+                                        + "]. Erro Sintático => Faltou dois pontos (:) na declaracao de variáveis"); 
+        }
+    }
+
+    private void variaveis() {
+
+    }
+
+    private void tipo_var() {
+
     }
 
     private void cont_dc() {
-        
+        if (token.getClasse() == ClasseToken.Identificador) {
+            dvar();
+            mais_dc();
+        }
     }
 
     // <mais_dc> ::=  ; <cont_dc>
