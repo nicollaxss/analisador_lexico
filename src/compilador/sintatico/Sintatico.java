@@ -52,10 +52,26 @@ public class Sintatico {
     }
 
     
-    // // <corpo> ::= <declara> <rotina> {A44} begin <sentencas> end {A46}
-    // public void corpo() {
-        
-    // }
+    // <corpo> ::= <declara> <rotina> {A44} begin <sentencas> end {A46}
+    public void corpo() {
+        declara();
+        // <rotina>
+        // {A44}
+        if (ehPalavraReservada("begin")) {
+            token = lexico.getNexToken();
+            sentencas();
+            if (ehPalavraReservada("end")) {
+                token = lexico.getNexToken();
+                // {A46}
+            } else {
+                throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
+                                        + "]. Erro Sintático => Faltou END no final do programa"); 
+            }
+        } else {
+            throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
+                                        + "]. Erro Sintático => Faltou o BEGIN no começo do Programa"); 
+        }
+    }
 
     private boolean ehPalavraReservada(String palavra) {
         return token.getClasse() == ClasseToken.PalavraReservada 
