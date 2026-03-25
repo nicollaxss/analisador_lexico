@@ -90,8 +90,19 @@ public class Sintatico {
         
     }
 
-    private void mais_dc() {
+    private void cont_dc() {
         
+    }
+
+    // <mais_dc> ::=  ; <cont_dc>
+    private void mais_dc() {
+        if (token.getClasse() == ClasseToken.PontoVirgula) {
+            token = lexico.getNexToken();
+            cont_dc();
+        } else {
+            throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
+                                        + "]. Erro Sintático => Faltou ponto e vírgula (;) na declaração de variáveis" ); 
+        }
     }
 
     private boolean ehPalavraReservada(String palavra) {
