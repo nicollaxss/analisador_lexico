@@ -98,8 +98,16 @@ public class Sintatico {
         }
     }
 
+    // <variaveis> ::= id {A03} <mais_var>
     private void variaveis() {
-
+        if (token.getClasse() == ClasseToken.Identificador) {
+            token = lexico.getNexToken();
+            // {A03}
+            mais_var();
+        } else {
+            throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
+                                        + "]. Erro Sintático => Faltou um identificador de variável" ); 
+        }
     }
 
     // <tipo_var> ::= integer
