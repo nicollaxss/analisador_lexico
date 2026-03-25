@@ -73,6 +73,27 @@ public class Sintatico {
         }
     }
 
+    // <declara> ::= var <dvar> <mais_dc> | ε
+    private void declara() {
+        if (ehPalavraReservada("var")) {
+            token = lexico.getNexToken();
+            dvar();
+            mais_dc();
+        }
+    }
+
+    private void sentencas() {
+
+    }
+
+    private void dvar() {
+        
+    }
+
+    private void mais_dc() {
+        
+    }
+
     private boolean ehPalavraReservada(String palavra) {
         return token.getClasse() == ClasseToken.PalavraReservada 
             && token.getValor().getTexto().equalsIgnoreCase(palavra);
