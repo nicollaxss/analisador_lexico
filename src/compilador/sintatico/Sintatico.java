@@ -102,8 +102,14 @@ public class Sintatico {
 
     }
 
+    // <tipo_var> ::= integer
     private void tipo_var() {
-
+        if (ehPalavraReservada("integer")) {
+            token = lexico.getNexToken();
+        } else {
+            throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
+                                        + "]. Erro Sintático => Faltou o tipo (INTEGER) das variaveis" ); 
+        }
     }
 
     private void cont_dc() {
