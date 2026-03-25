@@ -8,12 +8,14 @@ public class Sintatico {
 
     private Lexico lexico;
     private Token token;
+    private String arquivoCodigo;
 
-    public Sintatico(Lexico lexico) {
-        this.lexico = lexico;
+    public Sintatico(String arquivoCodigo) {
+        this.arquivoCodigo = arquivoCodigo;
     }
 
     public void analisar() {
+        lexico = new Lexico(arquivoCodigo);
         token = lexico.getNexToken();
         programa();
     }
@@ -27,7 +29,7 @@ public class Sintatico {
                 // {A01} -> Aqui viria a ação 01
                 if (token.getClasse() == ClasseToken.PontoVirgula) {
                     token = lexico.getNexToken();
-                    corpo();
+                    // corpo();
                     if (token.getClasse() == ClasseToken.Ponto) {
                         token = lexico.getNexToken();
                         // {A45}
@@ -41,10 +43,19 @@ public class Sintatico {
                 }
             } else {
                 throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                        + "]. Erro Sintático => Faltou começar o programa com Program (.)");
+                                        + "]. Erro Sintático => Faltou começar o programa com Program");
             }
-        }
+        } else {
+                throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
+                                        + "]. Erro Sintático => Faltou o nome do Programa"); 
+            }
     }
+
+    
+    // // <corpo> ::= <declara> <rotina> {A44} begin <sentencas> end {A46}
+    // public void corpo() {
+        
+    // }
 
     private boolean ehPalavraReservada(String palavra) {
         return token.getClasse() == ClasseToken.PalavraReservada 
