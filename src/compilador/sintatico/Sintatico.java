@@ -43,11 +43,11 @@ public class Sintatico {
                 }
             } else {
                 throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                        + "]. Erro Sintático => Faltou começar o programa com Program");
-            }
+                                        + "]. Erro Sintático => Faltou o nome do Programa"); 
+            } 
         } else {
                 throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                        + "]. Erro Sintático => Faltou o nome do Programa"); 
+                                        + "]. Erro Sintático => Faltou começar o programa com Program");
             }
     }
 
