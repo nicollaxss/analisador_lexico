@@ -84,19 +84,110 @@ public class Sintatico {
 
     // <sentencas> ::= <comando> <mais_sentencas>
     private void sentencas() {
-        comando();
+        // comando();
         mais_sentencas();
+    }
+
+    /*  <comando> ::=
+        read ( <var_read> ) |
+        write ( <exp_write> ) |
+        writeln ( <exp_write> ) {A61} |
+        for id {A57} := <expressao> {A11} to <expressao> {A12} do begin <sentencas> end {A13} |
+        repeat {A14} <sentencas> until ( <expressao_logica> ) {A15} |
+        while {A16} ( <expressao_logica> ) {A17} do begin <sentencas> end {A18} |
+        if ( <expressao_logica> ) {A19} then begin <sentencas> end {A20} <pfalsa> {A21} |
+        id {A49} := <expressao> {A22} | 
+    */
+
+    private void comando() {
+        // read ( <var_read> )
+        if (ehPalavraReservada("read")) {
+            // abreparenteses
+            // var_read();
+            // fechaparenteses
+        } 
+        // write ( <exp_write> )
+        else if (ehPalavraReservada("write")){
+            // abreparenteses
+            // exp_write();
+            // fechaparenteses
+        } 
+        // writeln ( <exp_write> ) {A61} 
+        else if (ehPalavraReservada("writeln")){
+            // abreparenteses
+            // exp_write();
+            // fechaparenteses
+        } 
+        // for id {A57} := <expressao> {A11} to <expressao> {A12} do begin <sentencas> end {A13} 
+        else if (ehPalavraReservada("for")){
+            token = lexico.getNexToken();
+            // id();
+            // analisar ponto e virgula
+            // expressao();
+            // to
+            // expressao();
+            // do
+            // begin
+            // sentencas();
+            // end
+        }
+        // repeat {A14} <sentencas> until ( <expressao_logica> ) {A15}
+        else if (ehPalavraReservada("repeat")){
+            // sentencas();
+            // until
+            // abre parenteses
+            // expressao_logica();
+            // fecha parenteses
+        }
+        // while {A16} ( <expressao_logica> ) {A17} do begin <sentencas> end {A18}
+        else if (ehPalavraReservada("while")){
+            // abre parenteses
+            // expressao_logica();
+            // fecha parenteses
+            // do
+            // begin
+            // sentencas();
+            // end
+        }
+        // if ( <expressao_logica> ) {A19} then begin <sentencas> end {A20} <pfalsa> {A21}
+        else if (ehPalavraReservada("if")){
+            // abre parenteses
+            // expressao_logica();
+            // fecha parenteses
+            // then
+            // begin
+            // sentencas();
+            // end
+            // pfalsa();
+        }
+        // id {A49} := <expressao> {A22}
+        else if (ehPalavraReservada("id")){
+            // id();
+            // :=
+            // expressao();
+        }
     }
 
     // <mais_sentencas> ::= ; <cont_sentencas>
     private void mais_sentencas() {
-        if (token.getClass() == ClasseToken.PontoVirgula) {
+        if (token.getClasse() == ClasseToken.PontoVirgula) {
             token = lexico.getNexToken();
             cont_sentencas();
         } else {
             throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
                                         + "]. Erro Sintático => Faltou ponto e vírgula (;) no final de uma sentença"); 
         }
+    }
+
+    // <cont_sentencas> ::= <sentencas> | ε
+    private void cont_sentencas() {
+        // verificar se é vazio primeiro
+        if (ehPalavraReservada("read") || ehPalavraReservada("write") || 
+            ehPalavraReservada("writeln") || ehPalavraReservada("for") ||
+            ehPalavraReservada("repeat") || ehPalavraReservada("while") || 
+            ehPalavraReservada("if") || token.getClasse() == ClasseToken.Identificador)  {
+                sentencas();
+            }
     }
 
     // <dvar> ::= <variaveis> : <tipo_var> {A02}
