@@ -29,8 +29,8 @@ public class Sintatico {
                 // {A01} -> Aqui viria a ação 01
                 if (token.getClasse() == ClasseToken.PontoVirgula) {
                     token = lexico.getNexToken();
-                    // corpo();
-                    if (token.getClasse() == ClasseToken.Ponto) {
+                    corpo();
+                    if (token.getClasse() == ClasseToken.Ponto) { // nao esta verificando o end, ate agora
                         token = lexico.getNexToken();
                         // {A45}
                     } else {
@@ -39,7 +39,7 @@ public class Sintatico {
                     }
                 } else {
                     throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                + "]. Erro Sintático => Faltou ponto e virgula depois do nome do programa (.)");
+                                + "]. Erro Sintático => Faltou ponto e virgula depois do nome do programa (;)");
                 }
             } else {
                 throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
@@ -82,8 +82,21 @@ public class Sintatico {
         }
     }
 
+    // <sentencas> ::= <comando> <mais_sentencas>
     private void sentencas() {
+        comando();
+        mais_sentencas();
+    }
 
+    // <mais_sentencas> ::= ; <cont_sentencas>
+    private void mais_sentencas() {
+        if (token.getClass() == ClasseToken.PontoVirgula) {
+            token = lexico.getNexToken();
+            cont_sentencas();
+        } else {
+            throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
+                                        + "]. Erro Sintático => Faltou ponto e vírgula (;) no final de uma sentença"); 
+        }
     }
 
     // <dvar> ::= <variaveis> : <tipo_var> {A02}
