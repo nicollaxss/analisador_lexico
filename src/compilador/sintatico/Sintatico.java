@@ -131,10 +131,20 @@ public class Sintatico {
             }
         } 
         // writeln ( <exp_write> ) {A61} 
+        // adicionar a questao de linha nova
         else if (ehPalavraReservada("writeln")){
-            // abreparenteses
-            // exp_write();
-            // fechaparenteses
+            token = lexico.getNexToken();
+            if (token.getClasse() == ClasseToken.AbreParenteses) {
+                token = lexico.getNexToken();
+                exp_write();   
+                if (token.getClasse() !=  ClasseToken.FechaParenteses) {
+                    throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
+                                        + "]. Erro Sintático => Faltou fechar parênteses ')'");
+                }
+            } else {
+                throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
+                                        + "]. Erro Sintático => Faltou abrir parênteses '('"); 
+            }
         } 
         // for id {A57} := <expressao> {A11} to <expressao> {A12} do begin <sentencas> end {A13} 
         else if (ehPalavraReservada("for")){

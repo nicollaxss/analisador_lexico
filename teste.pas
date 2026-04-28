@@ -1,5 +1,5 @@
 Program Aleluia;
 
 begin
-    write('ola');
+    writeln('ola');
 end.
