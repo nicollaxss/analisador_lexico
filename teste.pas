@@ -57,5 +57,5 @@ Begin
     else
     begin
         writeln('Um dos valores não é positivo');
-    end;
+    end
 end.

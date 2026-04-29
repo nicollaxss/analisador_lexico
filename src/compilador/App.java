@@ -13,14 +13,13 @@ public class App {
             System.out.println("Análise sintática finalizada com sucesso!");
 
         } catch (RuntimeException e){
-            // System.err.println("\n==============================");
-            // System.err.println("ERRO NA COMPILAÇÃO");
-            // System.err.println("==============================");
+            System.err.println("\n==============================");
+            System.err.println("ERRO NA COMPILAÇÃO");
+            System.err.println("==============================");
             System.err.println(e.getMessage());
-            // System.err.println("==============================\n");
+            System.err.println("==============================\n");
         }
         
-
 //        Lexico lexico = new Lexico("teste.pas");
 //        Token token = lexico.getNexToken();
 //
