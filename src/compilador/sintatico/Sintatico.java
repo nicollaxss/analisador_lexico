@@ -319,8 +319,13 @@ public class Sintatico {
             if (ehPalavraReservada("begin")) {
                 token = lexico.getNexToken();
                 sentencas();
+                System.out.println("DASDAS" + token);
                 if (ehPalavraReservada("end")) {
                     token = lexico.getNexToken();
+                    if (token.getClasse() == ClasseToken.Ponto) {
+                        throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
+                            + "]. Erro Sintático => Está faltando um end. Tem apenas o do end do final");
+                    }
                 } else {
                     throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
                             + "]. Erro Sintático => Faltou 'end'");
