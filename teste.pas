@@ -2,7 +2,7 @@
 Program MuitoDoido;
 Var TempoEmAnos, ValorSalario, x, y, z : Integer;
 a, b, c : Integer; 
-Begin 
+Begin
     If (TempoEmAnos > 10) Then
     Begin
         ValorSalario := 100; 

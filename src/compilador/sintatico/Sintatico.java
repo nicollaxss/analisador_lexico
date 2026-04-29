@@ -59,7 +59,6 @@ public class Sintatico {
         // {A44}
         if (ehPalavraReservada("begin")) {
             token = lexico.getNexToken();
-            // System.out.println("ASDYHGLSADLKJASHLKJ" + token);
             sentencas();
             if (ehPalavraReservada("end")) {
                 token = lexico.getNexToken();
@@ -110,10 +109,10 @@ public class Sintatico {
                 if (token.getClasse() == ClasseToken.FechaParenteses) {
                     token = lexico.getNexToken();
                 } else {
-                    throw new RuntimeException("[linha=" + token.getLinha() + "]. Faltou ')'");
+                    throw new RuntimeException("[linha=" + token.getLinha() + "]. Faltou ')' no read");
                 }
             } else {
-                    throw new RuntimeException("[linha=" + token.getLinha() + "]. Faltou '('");
+                    throw new RuntimeException("[linha=" + token.getLinha() + "]. Faltou '(' no read");
                 }
         } 
         // write ( <exp_write> )
@@ -153,43 +152,59 @@ public class Sintatico {
             }
         } 
         // for id {A57} := <expressao> {A11} to <expressao> {A12} do begin <sentencas> end {A13} 
-        else if (ehPalavraReservada("for")){
+        else if (ehPalavraReservada("for")) {
             token = lexico.getNexToken();
+
             if (token.getClasse() == ClasseToken.Identificador) {
                 // {A57}
                 token = lexico.getNexToken();
-                if (token.getClasse() == ClasseToken.Atribuicao) { 
+
+                if (token.getClasse() == ClasseToken.Atribuicao) {
                     token = lexico.getNexToken();
-                    expressao();
+
+                    expressao(false);
                     // {A11}
-                    if (ehPalavraReservada("to")) { 
-                        token = lexico.getNexToken();
-                        expressao();
-                        // {A12}
-                        if (ehPalavraReservada("do")) {
-                            token = lexico.getNexToken();
-                            if (ehPalavraReservada("begin")) {
-                                token = lexico.getNexToken();
-                                sentencas();
-                                if (ehPalavraReservada("end")) {
-                                    token = lexico.getNexToken();
-                                } else {
-                                    throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                        + "]. Erro Sintático => Faltou 'end'"); 
-                                }
-                            } else {
-                                throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                        + "]. Erro Sintático => Faltou 'begin'"); 
-                            }  
-                        } else {
-                                throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                    + "]. Erro Sintático => Faltou 'do'"); 
-                        }  
-                    } else {
-                            throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                            + "]. Erro Sintático => Faltou 'to'"); 
+
+                    if (!ehPalavraReservada("to")) {
+                        throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna()
+                            + "]. Erro Sintático => Faltou 'to'");
                     }
-                }    
+
+                    token = lexico.getNexToken();
+
+                    expressao(false);
+                    // {A12}
+
+                    if (ehPalavraReservada("do")) {
+                        token = lexico.getNexToken();
+
+                        if (ehPalavraReservada("begin")) {
+                            token = lexico.getNexToken();
+
+                            sentencas();
+
+                            if (ehPalavraReservada("end")) {
+                                token = lexico.getNexToken();
+                                // {A13}
+                            } else {
+                                throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna()
+                                    + "]. Erro Sintático => Faltou 'end'");
+                            }
+                        } else {
+                            throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna()
+                                + "]. Erro Sintático => Faltou 'begin'");
+                        }
+                    } else {
+                        throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna()
+                            + "]. Erro Sintático => Faltou 'do'");
+                    }
+                } else {
+                    throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna()
+                        + "]. Erro Sintático => Faltou ':=' no for");
+                }
+            } else {
+                throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna()
+                    + "]. Erro Sintático => Faltou identificador no for");
             }
         }
         // repeat {A14} <sentencas> until ( <expressao_logica> ) {A15}
@@ -207,11 +222,11 @@ public class Sintatico {
                         // {A15}
                     } else {
                         throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                            + "]. Erro Sintático => Faltou ')'"); 
+                                            + "]. Erro Sintático => Faltou ')' no until"); 
                     }
                 } else {
                     throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                            + "]. Erro Sintático => Faltou ')'"); 
+                                            + "]. Erro Sintático => Faltou '(' no until"); 
                 }
             } else {
                 throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
@@ -306,8 +321,10 @@ public class Sintatico {
                 expressao();
                 // {A22}
             } else {
-                throw new RuntimeException("[linha=" + token.getLinha() + "]. Esperado ':='");
+                throw new RuntimeException("[linha=" + token.getLinha() + "]. Esperado ':=' no identificador");
             }
+        } else {
+            throw new RuntimeException("[linha=" + token.getLinha() + "]. Esperado identificador");
         }
     }
 
@@ -316,24 +333,22 @@ public class Sintatico {
         if (ehPalavraReservada("else")) {
             // {A25}
             token = lexico.getNexToken();
+
             if (ehPalavraReservada("begin")) {
                 token = lexico.getNexToken();
+
                 sentencas();
-                System.out.println("DASDAS" + token);
+
                 if (ehPalavraReservada("end")) {
                     token = lexico.getNexToken();
-                    if (token.getClasse() == ClasseToken.Ponto) {
-                        throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                            + "]. Erro Sintático => Está faltando um end. Tem apenas o do end do final");
-                    }
                 } else {
-                    throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                            + "]. Erro Sintático => Faltou 'end'");
+                    throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna()
+                        + "]. Erro Sintático => Faltou 'end' no else");
                 }
             } else {
-                    throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                            + "]. Erro Sintático => Faltou 'begin'");
-                }
+                throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna()
+                    + "]. Erro Sintático => Faltou 'begin' no else");
+            }
         }
     }
 
@@ -427,29 +442,98 @@ public class Sintatico {
         }
     }
     
-    // <expressao> ::= <termo> <mais_expressao>
     private void expressao() {
-        termo();
-        mais_expressao();
+        expressao(true);
     }
 
-    // <termo> ::= <fator> <mais_termo>
-    private void termo() {
+    private void expressao(boolean validarOperador) {
+        termo(validarOperador);
+
+        if (validarOperador && iniciaFator()) {
+            throw new RuntimeException(
+                "[linha=" + token.getLinha() + ", coluna=" + token.getColuna() +
+                "]. Erro Sintático => Operador esperado (+, -, *, /)"
+            );
+        }
+
+        mais_expressao(validarOperador);
+    }
+
+
+    // // <expressao> ::= <termo> <mais_expressao>
+    // private void expressao() {
+    //     termo();
+
+    //     if (token.getClasse() == ClasseToken.Identificador ||
+    //     token.getClasse() == ClasseToken.Inteiro ||
+    //     token.getClasse() == ClasseToken.AbreParenteses) {
+
+    //         throw new RuntimeException(
+    //             "[linha=" + token.getLinha() + ", coluna=" + token.getColuna() +
+    //             "]. Erro Sintático => Operador esperado (+, -, *, /)"
+    //         );
+    //     }
+
+    //     mais_expressao();
+    // }
+
+    // // <termo> ::= <fator> <mais_termo>
+    // private void termo() {
+    //     fator();
+
+    //     if (token.getClasse() == ClasseToken.Identificador ||
+    //     token.getClasse() == ClasseToken.Inteiro ||
+    //     token.getClasse() == ClasseToken.AbreParenteses) {
+
+    //         throw new RuntimeException(
+    //             "[linha=" + token.getLinha() + ", coluna=" + token.getColuna() +
+    //             "]. Erro Sintático => Operador esperado (*, /)"
+    //         );
+    //     }
+
+    //     mais_termo();
+    // }
+
+
+    private void termo(boolean validarOperador) {
         fator();
-        mais_termo();
+
+        if (validarOperador && iniciaFator()) {
+            throw new RuntimeException(
+                "[linha=" + token.getLinha() + ", coluna=" + token.getColuna() +
+                "]. Erro Sintático => Operador esperado"
+            );
+        }
+
+        mais_termo(validarOperador);
     }
 
     /*
     <mais_termo> ::= * <fator> {A39} <mais_termo>  |
                      / <fator> {A40} <mais_termo>  | ε
     */
-   private void mais_termo() {
+//    private void mais_termo() {
+//     if (token.getClasse() == ClasseToken.Multiplicacao || 
+//         token.getClasse() == ClasseToken.Divisao) {
+//             token = lexico.getNexToken();
+//             fator();
+//             mais_termo();
+//         }
+//     }
+private void mais_termo(boolean validarOperador) {
     if (token.getClasse() == ClasseToken.Multiplicacao || 
         token.getClasse() == ClasseToken.Divisao) {
+
             token = lexico.getNexToken();
             fator();
-            mais_termo();
+            mais_termo(validarOperador);
         }
+    }
+
+    private boolean iniciaFator() {
+    return token.getClasse() == ClasseToken.Identificador ||
+           token.getClasse() == ClasseToken.Inteiro ||
+           token.getClasse() == ClasseToken.AbreParenteses;
     }
 
     // <fator> ::= id {A55} | intnum {A41} | ( <expressao> ) 
@@ -470,7 +554,7 @@ public class Sintatico {
             token = lexico.getNexToken();
         } else {
             throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                            + "]. Erro Sintático => Não é um <fator>"); 
+                                            + "]. Erro Sintático => " + token.getClasse() + " não é um <fator>"); 
         }
     }
 
@@ -478,12 +562,21 @@ public class Sintatico {
     <mais_expressao> ::= + <termo> {A37} <mais_expressao>  |
                          - <termo> {A38} <mais_expressao>  | ε
     */
-   private void mais_expressao() {
-        if (token.getClasse() == ClasseToken.Mais || 
-            token.getClasse() == ClasseToken.Menos) {
+//    private void mais_expressao() {
+//         if (token.getClasse() == ClasseToken.Mais || 
+//             token.getClasse() == ClasseToken.Menos) {
+//             token = lexico.getNexToken();
+//             termo();
+//             mais_expressao();
+//         }
+//     }
+private void mais_expressao(boolean validarOperador) {
+    if (token.getClasse() == ClasseToken.Mais || 
+        token.getClasse() == ClasseToken.Menos) {
+
             token = lexico.getNexToken();
-            termo();
-            mais_expressao();
+            termo(validarOperador);
+            mais_expressao(validarOperador);
         }
     }
 
@@ -514,7 +607,7 @@ public class Sintatico {
         }
         else {
             throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                        + "]. Erro Sintático => Write"); 
+                                        + "]. Erro Sintático => Faltou o operando no Write"); 
         }
     }
 
@@ -535,7 +628,7 @@ public class Sintatico {
             mais_var_read();
         } else {
             throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
-                                        + "]. Erro Sintático => Faltou identificador");
+                                        + "]. Erro Sintático => Faltou identificado no read");
         }
     }
 
@@ -569,7 +662,6 @@ public class Sintatico {
     // <dvar> ::= <variaveis> : <tipo_var> {A02}
     private void dvar() {
         variaveis();
-        // System.out.println("token atual" + token);
         if (token.getClasse() == ClasseToken.DoisPontos) {
             token = lexico.getNexToken();
             tipo_var();
@@ -584,6 +676,10 @@ public class Sintatico {
         if (token.getClasse() == ClasseToken.Identificador) {
             token = lexico.getNexToken();
             // {A03}
+            if (token.getClasse() == ClasseToken.Identificador) {
+                throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
+                                        + "]. Erro Sintático => Faltou virgula na definição de mais variáveis" ); 
+            }
             mais_var();
         } else {
             throw new RuntimeException("[linha=" + token.getLinha() + ", coluna=" + token.getColuna() 
@@ -611,7 +707,12 @@ public class Sintatico {
 
     // <cont_dc> ::= <dvar> <mais_dc> | ε
     private void cont_dc() {
-        if (token.getClasse() == ClasseToken.Identificador) {
+        // if (token.getClasse() == ClasseToken.Identificador &&
+        //     lexico.peekToken().getClasse() == ClasseToken.DoisPontos) -> implementar peekToken depois
+
+
+    if (token.getClasse() == ClasseToken.Identificador) {
+
             dvar();
             mais_dc();
         }
